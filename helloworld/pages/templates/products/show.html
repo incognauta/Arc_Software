@@ -1,0 +1,138 @@
+{% extends 'pages/base.html' %} {% block title %}{{ title }}{% endblock %} {%
+block header_title %}{{ subtitle }}{% endblock %} {% block content %}
+<div class="container mt-4">
+  <div class="row">
+    <!-- Product Image and Details -->
+    <div class="col-md-6">
+      <div class="card">
+        {% if product.image %}
+        <img
+          src="{{ product.image.url }}"
+          class="card-img-top"
+          alt="{{ product.name }}"
+        />
+        {% else %}
+        <img
+          src="https://via.placeholder.com/400x300?text={{ product.name }}"
+          class="card-img-top"
+          alt="{{ product.name }}"
+        />
+        {% endif %}
+      </div>
+    </div>
+
+    <!-- Product Info -->
+    <div class="col-md-6">
+      <div class="card">
+        <div class="card-body">
+          <h2 class="card-title">{{ product.name }}</h2>
+
+          <hr />
+
+          {% if product.price > 2000 %}
+          <h5 class="text-danger">${{ product.price }}</h5>
+          {% else %}
+          <h5 class="text-success">${{ product.price }}</h5>
+          {% endif %}
+
+          <hr />
+
+          <h6 class="text-muted">Description</h6>
+          <p class="card-text">
+            {{ product.description|default:"No description available" }}
+          </p>
+
+          <hr />
+
+          <div class="d-flex gap-2">
+            <a href="{% url 'products' %}" class="btn btn-secondary"
+              >Back to Products</a
+            >
+            <button
+              class="btn btn-primary"
+              onclick="
+                document
+                  .getElementById('commentForm')
+                  .scrollIntoView({ behavior: 'smooth' })
+              "
+            >
+              Add Comment
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Comments Section -->
+  <div class="row mt-5">
+    <div class="col-md-8">
+      <h4 class="mb-4">
+        <i class="bi bi-chat-dots"></i> Comments ({{ comments.count }})
+      </h4>
+
+      {% if comments %} {% for comment in comments %}
+      <div class="card mb-3">
+        <div class="card-body">
+          <p class="card-text">{{ comment.description }}</p>
+          <small class="text-muted"> Added on {{ comment.id }}. </small>
+        </div>
+      </div>
+      {% endfor %} {% else %}
+      <div class="alert alert-info">
+        <i class="bi bi-info-circle"></i> No comments yet. Be the first to
+        comment!
+      </div>
+      {% endif %}
+
+      <!-- Comment Form -->
+      <div class="card mt-4" id="commentForm">
+        <div class="card-header bg-primary text-white">
+          <h6 class="mb-0">
+            <i class="bi bi-pencil-square"></i> Add a Comment
+          </h6>
+        </div>
+        <div class="card-body">
+          <form method="post">
+            {% csrf_token %}
+
+            <div class="mb-3">
+              {{ comment_form.description }} {% if
+              comment_form.description.errors %}
+              <div class="text-danger mt-2">
+                {{ comment_form.description.errors }}
+              </div>
+              {% endif %}
+            </div>
+
+            <button type="submit" class="btn btn-primary">
+              <i class="bi bi-send"></i> Post Comment
+            </button>
+            <a href="{% url 'products' %}" class="btn btn-secondary">Cancel</a>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<style>
+  .card {
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    border: none;
+  }
+
+  .card-img-top {
+    object-fit: cover;
+    height: 300px;
+  }
+
+  .card-body {
+    padding: 1.5rem;
+  }
+
+  #commentForm {
+    margin-top: 2rem;
+  }
+</style>
+{% endblock %}

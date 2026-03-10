@@ -1,0 +1,203 @@
+═══════════════════════════════════════════════════════════════════════════════
+    COMANDOS NECESARIOS PARA OPERAR DJANGO - PROYECTO HELLOWORLD
+═══════════════════════════════════════════════════════════════════════════════
+
+DIRECTORIO BASE: /home/incognauta/Escritorio/Arc_Software/djangocourse
+ENTORNO VIRTUAL: django_course_env
+
+═══════════════════════════════════════════════════════════════════════════════
+1. INICIO Y CONFIGURACIÓN INICIAL
+═══════════════════════════════════════════════════════════════════════════════
+
+# Navegar al directorio del proyecto
+cd /home/incognauta/Escritorio/Arc_Software/djangocourse
+
+# Activar el entorno virtual
+source django_course_env/bin/activate
+
+# Navegar al directorio de la aplicación
+cd helloworld
+
+# Verificar que Django está instalado
+python -m django --version
+
+═══════════════════════════════════════════════════════════════════════════════
+2. MIGRACIONES (Base de datos)
+═══════════════════════════════════════════════════════════════════════════════
+
+# Ver migraciones pendientes
+python manage.py showmigrations
+
+# Aplicar todas las migraciones
+python manage.py migrate
+
+# Ver estado de migraciones
+python manage.py migrate --list
+
+# Crear migraciones nuevas (después de cambiar modelos)
+python manage.py makemigrations
+
+# Aplicar migraciones específicas
+python manage.py migrate pages
+
+# Revertir migraciones
+python manage.py migrate pages zero
+
+═══════════════════════════════════════════════════════════════════════════════
+3. EJECUTAR EL SERVIDOR
+═══════════════════════════════════════════════════════════════════════════════
+
+# Iniciar servidor en puerto por defecto (8000)
+python manage.py runserver
+
+# Iniciar servidor en puerto específico
+python manage.py runserver 8001
+
+# Iniciar servidor y hacerlo accesible desde otras máquinas
+python manage.py runserver 0.0.0.0:8000
+
+# Acceder a la aplicación en el navegador
+http://127.0.0.1:8000/
+http://localhost:8000/
+
+# Panel de administración
+http://127.0.0.1:8000/admin/
+
+═══════════════════════════════════════════════════════════════════════════════
+4. ADMINISTRADOR (Admin)
+═══════════════════════════════════════════════════════════════════════════════
+
+# Crear superusuario (usuario administrador)
+python manage.py createsuperuser
+
+# Cambiar contraseña de usuario
+python manage.py changepassword nombre_usuario
+
+# Crear usuario normal
+python manage.py createsuperuser
+
+═══════════════════════════════════════════════════════════════════════════════
+5. APLICACIONES Y MODELOS
+═══════════════════════════════════════════════════════════════════════════════
+
+# Crear nueva aplicación
+python manage.py startapp nombre_app
+
+# Ver información de la aplicación
+python manage.py inspectdb nombre_tabla
+
+# Validar modelos
+python manage.py check
+
+═══════════════════════════════════════════════════════════════════════════════
+6. SESIÓN INTERACTIVA DJANGO (Django Shell)
+═══════════════════════════════════════════════════════════════════════════════
+
+# Abrir shell interactivo de Python con Django
+python manage.py shell
+
+# Dentro del shell interactivo:
+from pages.models import *
+from django.contrib.auth.models import User
+
+# Ver todos los usuarios
+User.objects.all()
+
+# Crear un usuario
+User.objects.create_user(username='user1', password='pass123')
+
+# Salir del shell
+exit()
+
+═══════════════════════════════════════════════════════════════════════════════
+7. LIMPIEZA Y DEPURACIÓN
+═══════════════════════════════════════════════════════════════════════════════
+
+# Eliminar archivos de caché
+find . -type d -name __pycache__ -exec rm -r {} +
+find . -type f -name "*.pyc" -delete
+
+# Verificar errores en el proyecto
+python manage.py check
+
+# Listar todas las URLs de la aplicación
+python manage.py show_urls
+
+# Ver configuración de settings
+python manage.py diffsettings
+
+═══════════════════════════════════════════════════════════════════════════════
+8. ARCHIVOS Y DIRECTORIOS IMPORTANTES
+═══════════════════════════════════════════════════════════════════════════════
+
+Estructura del proyecto:
+
+helloworld/
+├── manage.py                    → Archivo principal para comandos Django
+├── db.sqlite3                   → Base de datos
+├── helloworld_project/
+│   ├── __init__.py
+│   ├── settings.py              → Configuración del proyecto (INSTALLED_APPS, etc)
+│   ├── urls.py                  → URLs principales
+│   ├── asgi.py                  → Configuración ASGI
+│   └── wsgi.py                  → Configuración WSGI
+└── pages/
+    ├── migrations/              → Migraciones de la BD
+    ├── templates/pages/
+    │   ├── base.html            → Template base con estructura HTML
+    │   └── home.html            → Template home
+    ├── static/                  → Archivos estáticos (CSS, JS, imágenes)
+    ├── models.py                → Modelos de BD
+    ├── views.py                 → Vistas (lógica)
+    ├── urls.py                  → URLs de la aplicación
+    ├── admin.py                 → Configuración del admin
+    └── apps.py                  → Configuración de la aplicación
+
+═══════════════════════════════════════════════════════════════════════════════
+9. FLUJO TÍPICO DE DESARROLLO
+═══════════════════════════════════════════════════════════════════════════════
+
+1. Activar entorno virtual:
+   source django_course_env/bin/activate
+
+2. Navegar al proyecto:
+   cd helloworld
+
+3. Si hay cambios en models.py:
+   python manage.py makemigrations
+   python manage.py migrate
+
+4. Ejecutar servidor:
+   python manage.py runserver
+
+5. Abrir navegador:
+   http://127.0.0.1:8000/
+
+6. Para salir del servidor:
+   Presionar Ctrl+C
+
+═══════════════════════════════════════════════════════════════════════════════
+10. NOTAS IMPORTANTES
+═══════════════════════════════════════════════════════════════════════════════
+
+- Siempre activar el entorno virtual antes de trabajar
+- Los cambios en views.py y templates no requieren reiniciar servidor
+- Los cambios en models.py SI requieren: makemigrations → migrate
+- Nunca subir db.sqlite3 a repositorio en producción
+- Nunca subir SECRET_KEY a repositorio público
+- Para producción, cambiar DEBUG=False en settings.py
+
+═══════════════════════════════════════════════════════════════════════════════
+11. ARCHIVOS PRINCIPALES A EDITAR (PARA DESARROLLO)
+═══════════════════════════════════════════════════════════════════════════════
+
+pages/views.py              → Agregar lógica (vistas)
+pages/urls.py               → Agregar rutas
+pages/models.py             → Agregar modelos (tablas BD)
+pages/templates/pages/*.html → Crear/editar templates
+helloworld_project/settings.py → Configuración global
+helloworld_project/urls.py  → URLs principales
+
+═══════════════════════════════════════════════════════════════════════════════
+
+Última actualización: 24-02-2026
