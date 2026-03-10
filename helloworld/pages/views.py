@@ -6,8 +6,20 @@ from django.urls import reverse
 from django import forms
 from django.contrib import messages
 from .models import Product, Comment
+from .utils import ImageLocalStorage
 
 # Create your views here.
+def ImageViewFactory(image_storage):
+    class ImageView(View):
+        template_name = 'images/index.html'
+        def get(self, request):
+            image_url = request.session.get('image_url', '')
+            return render(request, self.template_name, {'image_url': image_url})
+        def post(self, request):
+            image_url = image_storage.store(request)
+            request.session['image_url'] = image_url
+            return redirect('image_index')
+    return ImageView
 
 class HomePageView(TemplateView):
     template_name = 'pages/home.html'
@@ -153,3 +165,23 @@ class ProductCreateView(View):
 class ProductCreateSuccessView(TemplateView):
     """Dummy view for URL config compatibility"""
     template_name = 'products/index.html'
+
+
+# ============================================
+# SAME APPLICATION WITHOUT DEPENDENCY INVERSION
+# ============================================
+class ImageViewNoDI(View):
+    """Vista sin uso de Inyección de Dependencias (crear la dependencia internamente)"""
+    template_name = 'imagesnotdi/index.html'
+    
+    def get(self, request):
+        image_url = request.session.get('image_url', '')
+        return render(request, self.template_name, {'image_url': image_url})
+    
+    def post(self, request):
+        # ❌ PROBLEMA: La vista crea directamente la dependencia
+        # No es flexible ni testeable
+        image_storage = ImageLocalStorage()
+        image_url = image_storage.store(request)
+        request.session['image_url'] = image_url
+        return redirect('imagenodi_index')

@@ -1,0 +1,106 @@
+{% extends "pages/base.html" %} {% block title %}Imagen - SIN Inyección de
+Dependencias{% endblock %} {% block content %}
+<div class="container mt-5">
+  <div class="row">
+    <div class="col-md-8 offset-md-2">
+      <div class="card">
+        <div class="card-header bg-danger text-white">
+          <h4 class="mb-0">
+            📸 Subir Imagen - SIN Inyección de Dependencias ❌
+          </h4>
+        </div>
+        <div class="card-body">
+          <p class="alert alert-warning">
+            <strong>Patrón:</strong> Dependencia Hardcodeada (Anti-patrón)
+            <br />
+            <code>image_storage = ImageLocalStorage()</code>
+            <br />
+            La dependencia se <strong>crea internamente</strong> en la vista
+          </p>
+
+          <form
+            method="POST"
+            action="{% url 'imagenodi_save' %}"
+            enctype="multipart/form-data"
+          >
+            {% csrf_token %}
+            <div class="mb-3">
+              <label for="profileImage" class="form-label"
+                >Selecciona una imagen</label
+              >
+              <input
+                type="file"
+                class="form-control"
+                id="profileImage"
+                name="profile_image"
+                accept="image/*"
+                required
+              />
+              <small class="form-text text-muted"
+                >Formatos soportados: JPG, PNG, GIF</small
+              >
+            </div>
+            <button type="submit" class="btn btn-danger">Subir Imagen</button>
+          </form>
+
+          {% if image_url %}
+          <hr />
+          <div class="mt-4">
+            <h5>Imagen Subida:</h5>
+            <div class="border rounded p-3">
+              <img
+                src="{{ image_url }}"
+                alt="Imagen subida"
+                class="img-fluid"
+                style="max-height: 300px"
+              />
+            </div>
+            <p class="mt-2 text-muted">
+              <small>URL: <code>{{ image_url }}</code></small>
+            </p>
+          </div>
+          {% endif %}
+        </div>
+      </div>
+
+      <!-- Comparativa -->
+      <div class="card mt-4">
+        <div class="card-header bg-warning text-dark">
+          <h5 class="mb-0">⚠️ Problemas sin Inyección de Dependencias</h5>
+        </div>
+        <div class="card-body">
+          <p>En esta versión <strong>SIN DI</strong>:</p>
+          <ul>
+            <li>
+              ❌ La dependencia se <strong>crea internamente</strong> (<code
+                >new ImageLocalStorage()</code
+              >)
+            </li>
+            <li>
+              ❌ Es <strong>difícil de testear</strong> (no puedo pasar un mock
+              fácilmente)
+            </li>
+            <li>
+              ❌ Es <strong>poco flexible</strong> (cambiar la implementación
+              requiere modificar la vista)
+            </li>
+            <li>
+              ❌ <strong>Acoplado</strong> (la vista conoce exactamente qué
+              clase usar)
+            </li>
+            <li>
+              ❌ Violación de
+              <strong>Single Responsibility Principle</strong> (la vista también
+              crea sus dependencias)
+            </li>
+          </ul>
+
+          <a href="{% url 'image_index' %}" class="btn btn-success mt-3">
+            ← Ver versión CON DI
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

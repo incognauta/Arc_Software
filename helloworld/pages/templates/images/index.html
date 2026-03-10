@@ -1,0 +1,99 @@
+{% extends "pages/base.html" %} {% block title %}Imagen - CON Inyección de
+Dependencias{% endblock %} {% block content %}
+<div class="container mt-5">
+  <div class="row">
+    <div class="col-md-8 offset-md-2">
+      <div class="card">
+        <div class="card-header bg-success text-white">
+          <h4 class="mb-0">
+            📸 Subir Imagen - CON Inyección de Dependencias ✅
+          </h4>
+        </div>
+        <div class="card-body">
+          <p class="alert alert-info">
+            <strong>Patrón:</strong> Factory + Dependency Injection
+            <br />
+            <code>ImageViewFactory(ImageLocalStorage())</code>
+            <br />
+            La dependencia se <strong>inyecta</strong> al crear la vista
+          </p>
+
+          <form
+            method="POST"
+            action="{% url 'image_save' %}"
+            enctype="multipart/form-data"
+          >
+            {% csrf_token %}
+            <div class="mb-3">
+              <label for="profileImage" class="form-label"
+                >Selecciona una imagen</label
+              >
+              <input
+                type="file"
+                class="form-control"
+                id="profileImage"
+                name="profile_image"
+                accept="image/*"
+                required
+              />
+              <small class="form-text text-muted"
+                >Formatos soportados: JPG, PNG, GIF</small
+              >
+            </div>
+            <button type="submit" class="btn btn-success">Subir Imagen</button>
+          </form>
+
+          {% if image_url %}
+          <hr />
+          <div class="mt-4">
+            <h5>Imagen Subida:</h5>
+            <div class="border rounded p-3">
+              <img
+                src="{{ image_url }}"
+                alt="Imagen subida"
+                class="img-fluid"
+                style="max-height: 300px"
+              />
+            </div>
+            <p class="mt-2 text-muted">
+              <small>URL: <code>{{ image_url }}</code></small>
+            </p>
+          </div>
+          {% endif %}
+        </div>
+      </div>
+
+      <!-- Comparativa -->
+      <div class="card mt-4">
+        <div class="card-header bg-info text-white">
+          <h5 class="mb-0">💡 ¿Qué es Inyección de Dependencias?</h5>
+        </div>
+        <div class="card-body">
+          <p>En esta versión <strong>CON DI</strong>:</p>
+          <ul>
+            <li>
+              ✅ La dependencia (<code>ImageLocalStorage</code>) se
+              <strong>pasa como parámetro</strong>
+            </li>
+            <li>
+              ✅ Es fácil de <strong>testear</strong> (puedo pasar un mock)
+            </li>
+            <li>
+              ✅ Es <strong>flexible</strong> (puedo cambiar la implementación
+              sin modificar la vista)
+            </li>
+            <li>
+              ✅ <strong>Desacoplado</strong> (la vista no conoce los detalles
+              de ImageLocalStorage)
+            </li>
+          </ul>
+
+          <a href="{% url 'imagenodi_index' %}" class="btn btn-warning mt-3">
+            Ver versión SIN DI →
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
